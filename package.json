@@ -1,0 +1,24 @@
+{
+  "name": "easidele",
+  "version": "1.0.0",
+  "description": "Easy to remove the duplicated files",
+  "keywords": [
+    "duplicate",
+    "easy",
+    "delete",
+    "files"
+  ],
+  "bin": {
+    "easidele": "bin/easidele"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {},
+  "author": "jihgao",
+  "license": "MIT",
+  "devDependencies": {
+    "findup-sync": "^0.3.0",
+    "nopt": "^3.0.6"
+  }
+}
