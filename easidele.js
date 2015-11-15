@@ -1,5 +1,7 @@
 var fs = require('fs');
 var path = require('path');
+var sPath="";
+var dPath="";
 /**
  * Get the files on certain condition
  * @param  {path}   directoryPath where the
@@ -12,8 +14,9 @@ function getFilesOnCondition(directoryPath, condition, callback){
     fs.readdir(directoryPath, function(err, files){
       var fileList = [];
       files.forEach(function (fileName, index, array) {
-        fs.stat(path.join(dPath,fileName), function(error, stat){
-          if(condition && condition(stat)){
+        var file = path.join(dPath,fileName);
+        fs.stat(file, function(error, stat){
+          if(condition && condition(fileName, stat)){
             fileList.push({path:file, name:fileName});
           }else{
             fileList.push({path:file, name:fileName});
@@ -46,7 +49,7 @@ function getDuplicatedFiles(keys){
   var next = arguments[1];
   var args = Array.prototype.slice.call(arguments, 2);
 
-  getFilesOnCondition(dPath, function(stat){
+  getFilesOnCondition(dPath, function(fileName, stat){
       return (keys.indexOf(JSON.stringify({name:fileName, birthtime: stat.birthtime})) !== -1);
   }, function(filesList){
     args.unshift(filesList)
@@ -70,26 +73,29 @@ function finishedFunction (){
   });
 }
 
-module.exports = function(sPath, dPath){
-  if(!sPath || !dPath || !fs.existsSync(sPath) || !fs.existsSync(dPath)){
-    if(!sPath){
+module.exports = function(fromPath, toPath){
+  if(!fromPath || !toPath || !fs.existsSync(fromPath) || !fs.existsSync(toPath)){
+    if(!fromPath){
       console.error("ERR", "Please provide the source path");
     }
-    if(!dPath){
+    if(!toPath){
       console.error("ERR", "Please provide the destination path");
     }
-    if(!fs.existsSync(sPath)){
+    if(!fs.existsSync(fromPath)){
       console.log("ERR", "The source directory does not exist!");
     }
-    if(!fs.existsSync(dPath)){
+    if(!fs.existsSync(toPath)){
       console.log("ERR", "The destionation directory does not exist!");
     }
     process.exit(5);
   }
 
-  if(sPath === dPath){
+  if(fromPath === toPath){
     console.error("ERR", "Please provide different path!");
     process.exit(5);
   }
+
+  sPath = fromPath;
+  dPath = toPath;
   getSourceFileList(getDuplicatedFiles, finishedFunction);
 }
