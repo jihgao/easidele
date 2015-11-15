@@ -16,10 +16,12 @@ function getFilesOnCondition(directoryPath, condition, callback){
       files.forEach(function (fileName, index, array) {
         var file = path.join(dPath,fileName);
         fs.stat(file, function(error, stat){
-          if(condition && condition(fileName, stat)){
-            fileList.push({path:file, name:fileName});
+          if(condition){
+            if(condition(fileName, stat)){
+              fileList.push({path:file, name:fileName});              
+            }
           }else{
-            fileList.push({path:file, name:fileName});
+            fileList.push(JSON.stringify({name:fileName, birthtime: stat.birthtime}));
           }
           if(index === array.length - 1){
             callback(fileList);
@@ -46,9 +48,9 @@ function getSourceFileList(){
  * Get the file list from the destination directory
  */
 function getDuplicatedFiles(keys){
+  console.log(keys);
   var next = arguments[1];
   var args = Array.prototype.slice.call(arguments, 2);
-  console.log(keys);
   getFilesOnCondition(dPath, function(fileName, stat){
       return (keys.indexOf(JSON.stringify({name:fileName, birthtime: stat.birthtime})) !== -1);
   }, function(filesList){
@@ -63,7 +65,6 @@ function getDuplicatedFiles(keys){
  */
 function finishedFunction (){
   files = arguments[0];
-  console.log(files);
   files.forEach(function (file, index, arr) {
     console.log("deleting:", file.name);
     fs.unlink(file.path, function(err){

@@ -22,7 +22,14 @@ if(!options.source || !options.destination){
 
 // Start looking in the CWD.
 var easidelePath = findup('easidele',{nocase:true, cwd:basedir});
-if(easidelePath){
-  console.log(easidelePath);
-  require(easidelePath)(options.source, options.destination);
+
+if(!easidelePath){
+  easidelePath = findup('easidele.js',{nocase:true, cwd:__dirname});
 }
+
+if(!easidelePath){
+  console.error("Easidele can not be found on your system!");
+  process.exit(5);
+}
+
+require(easidelePath)(options.source, options.destination);

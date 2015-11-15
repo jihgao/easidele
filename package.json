@@ -11,7 +11,7 @@
   "bin": {
     "easidele": "bin/easidele"
   },
-  "main": "lib/easidele.js",
+  "main": "easidele.js",
   "engines": {
     "node": ">= 0.8.0"
   },
