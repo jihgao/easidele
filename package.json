@@ -21,7 +21,7 @@
     "type": "git",
     "url": "https://github.com/jihgao/easidele.git"
   },
-  "devDependencies": {
+  "dependencies": {
     "findup-sync": "^0.3.0",
     "nopt": "^3.0.6"
   }
