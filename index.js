@@ -1,7 +1,43 @@
+#!/usr/bin/env node
+var program = require('commander');
 var fs = require('fs');
 var path = require('path');
-var sPath="";
-var dPath="";
+
+
+program
+ .version('0.0.1')
+ .option('-s, --source <src_path>', 'The path which you want it to compare')
+ .option('-d, --destination <dest_path>', 'The path which you want it to be compared and the duplicated files in this folder will be deleted')
+ .option('-r, --recursive', 'enable recursion')
+ .parse(process.argv);
+
+var fromPath=program.source;
+var toPath=program.destination;
+if(!fromPath || !toPath || !fs.existsSync(fromPath) || !fs.existsSync(toPath)){
+  if(!fromPath){
+    console.error("ERR", "Please provide the source path");
+  }
+  if(!toPath){
+    console.error("ERR", "Please provide the destination path");
+  }
+  if(!fs.existsSync(fromPath)){
+    console.log("ERR", "The source directory does not exist!");
+  }
+  if(!fs.existsSync(toPath)){
+    console.log("ERR", "The destionation directory does not exist!");
+  }
+  process.exit(5);
+}
+
+if(fromPath === toPath){
+  console.error("ERR", "Please provide different path!");
+  process.exit(5);
+}
+
+
+var sPath = fromPath;
+var dPath = toPath;
+
 /**
  * Get the files on certain condition
  * @param  {path}   directoryPath where the
@@ -16,14 +52,22 @@ function getFilesOnCondition(directoryPath, condition, callback){
       files.forEach(function (fileName, index, array) {
         var file = path.join(dPath,fileName);
         fs.stat(file, function(error, stat){
+
           if(stat){
+            if(program.recursive && stat.isDirectory()){
+              //TODO: here will implement the recursive function
+            }
             if(condition){
-              if(condition(fileName, stat)){
+              if(stat.isFile() && condition(fileName, stat)){
                 fileList.push({path:file, name:fileName});              
               }
             }else{
               fileList.push(JSON.stringify({name:fileName, birthtime: stat.birthtime}));
             }
+          }
+
+          if(error){
+            console.log(error);
           }
           if(index === array.length - 1){
             callback(fileList);
@@ -76,29 +120,4 @@ function finishedFunction (){
   });
 }
 
-module.exports = function(fromPath, toPath){
-  if(!fromPath || !toPath || !fs.existsSync(fromPath) || !fs.existsSync(toPath)){
-    if(!fromPath){
-      console.error("ERR", "Please provide the source path");
-    }
-    if(!toPath){
-      console.error("ERR", "Please provide the destination path");
-    }
-    if(!fs.existsSync(fromPath)){
-      console.log("ERR", "The source directory does not exist!");
-    }
-    if(!fs.existsSync(toPath)){
-      console.log("ERR", "The destionation directory does not exist!");
-    }
-    process.exit(5);
-  }
-
-  if(fromPath === toPath){
-    console.error("ERR", "Please provide different path!");
-    process.exit(5);
-  }
-
-  sPath = fromPath;
-  dPath = toPath;
-  getSourceFileList(getDuplicatedFiles, finishedFunction);
-}
+getSourceFileList(getDuplicatedFiles, finishedFunction);

@@ -1,7 +1,7 @@
 {
   "name": "easidele",
   "version": "1.0.0",
-  "description": "Easy to remove the duplicated files",
+  "description": "A command-line tool for delete duplicated files",
   "keywords": [
     "duplicate",
     "easy",
@@ -9,9 +9,8 @@
     "files"
   ],
   "bin": {
-    "easidele": "bin/easidele"
+    "easidele": "./index.js"
   },
-  "main": "easidele.js",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -23,8 +22,6 @@
     "url": "https://github.com/jihgao/easidele.git"
   },
   "dependencies": {
-    "findup-sync": "^0.3.0",
-    "nopt": "^3.0.6",
-    "resolve": "^1.1.6"
+    "commander": "^2.9.0"
   }
 }
